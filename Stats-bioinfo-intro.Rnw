@@ -1,0 +1,2341 @@
+\documentclass[xcolor=dvipsnames]{beamer}
+\mode<presentation>
+
+
+%%%%%%%%%% Either this
+
+%% %%% or these, which are like the third, but different color
+%% \usetheme{myFrankfurt}
+%% \useoutertheme[subsection=false]{mysmoothbars}
+%% \usecolortheme{crane} %% wolverine was original
+%% %%%%% or the next three and maybe the following three for navigation balls
+%% % \usetheme{myFrankfurt}
+%% % \useoutertheme[subsection=false]{mysmoothbars}
+%% % \usecolortheme{whale} %% wolverine was original
+%% %% whale OK
+%% \makeatletter
+%%   \beamer@compressfalse
+%% \makeatother
+%% %%%%% Issues with multiple lines, etc for dots
+%% %%%% http://tex.stackexchange.com/questions/35796/how-can-i-get-multiple-lines-of-frame-dots-in-beamer-navigation
+
+%% \setbeamertemplate{itemize item}[ball]
+%%  \setbeamertemplate{navigation symbols}{
+%%       \insertslidenavigationsymbol
+%%  }
+
+ 
+ 
+ 
+%%%%%%%%%%%%%%%  or this
+\usetheme[left,hideothersubsections]{myGoettingen}
+%\usetheme[left,hideothersubsections]{Hannover}
+\usepackage{CSIC2} %% page number:total pages
+% \usecolortheme{crane}
+% \usecolortheme{whale}
+% \usecolortheme{beaver} %% side bar bad
+\setbeamertemplate{itemize item}[ball]
+\setbeamertemplate{footline}[short occasion,frame number]
+\setbeamertemplate{navigation symbols}{
+%     \insertslidenavigationsymbol
+%     \insertsectionnavigationsymbol
+%     \insertdocnavigationsymbol
+}
+
+ 
+ 
+ 
+ 
+ 
+ 
+<<echo=FALSE,results='hide',error=FALSE>>=
+require(knitr, quietly = TRUE)
+opts_knit$set(concordance = TRUE)
+opts_knit$set(stop_on_error = 2L)
+@ 
+
+ 
+ 
+\usepackage{array}
+\usepackage[absolute,overlay]{textpos}
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{setspace}
+\usepackage{gitinfo2}
+\usepackage{url}
+\newcommand{\cyan}[1]{{\textcolor {cyan} {#1}}}
+\newcommand{\blu}[1]{{\textcolor {blue} {#1}}}
+\newcommand{\Burl}[1]{\blu{\url{#1}}}
+\newcommand{\red}[1]{{\textcolor {red} {#1}}}
+\newcommand{\green}[1]{{\textcolor {green} {#1}}}
+\newcommand{\mg}[1]{{\textcolor {magenta} {#1}}}
+\newcommand{\og}[1]{{\textcolor {PineGreen} {#1}}}
+\newcommand{\code}[1]{\texttt{\slshape\footnotesize #1}}
+\newcommand{\Code}[1]{\texttt{\slshape #1}}
+\newcommand{\myverb}[1]{{\footnotesize\texttt {\textbf{#1}}}}
+\newcommand{\Rnl}{\ +\qquad\ }
+\newcommand{\Emph}[1]{\emph{\mg{#1}}}
+%% \newcommand{\R}{{\sf R}}
+
+
+%\author[]{Ramon Diaz-Uriarte}
+
+\author[]{Ramon Diaz-Uriarte\\
+  Dept. Biochemistry, Universidad Aut\'onoma de Madrid \\ 
+  Instituto de Investigaciones Biom\'edicas ``Alberto Sols'' (UAM-CSIC)\\
+  Madrid, Spain\\{\footnotesize \texttt{ramon.diaz@iib.uam.es, rdiaz02@gmail.com}} \\
+%% {\footnote{rdiaz02@gmail.com}} \\
+{\small \Burl{http://ligarto.org/rdiaz}} \\
+ }
+
+
+%% \author{Ramon Diaz-Uriarte}
+%% \institute[]{Dept. Bioqu\'imica\\
+%% Universidad Aut\'onoma de Madrid\\
+%% Madrid, Spain\\
+%% \texttt{ramon.diaz@iib.uam.es}\\
+%% \Burl{http://ligarto.org/rdiaz}
+%% }
+
+
+<<echo=FALSE,eval=TRUE,results='hide'>>=
+options(width = 65)
+@ 
+
+
+\title[Stats for bioinfo]{Basic statistics for bioinformatics:
+  differential expression, multiple testing, classification}
+
+\date{\gitAuthorDate\ {\footnotesize (Release\gitRels: Rev: \gitAbbrevHash)}}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame} 
+\frametitle{License and copyright}
+
+\begin{center}
+
+\includegraphics[%
+     width=3.2cm,
+     keepaspectratio]
+{by-sa.eps}
+\vspace{10pt}
+
+{\footnotesize This work is Copyright, \copyright, 2014, Ramon Diaz-Uriarte, and is
+licensed under the \textbf{Creative Commons }
+Attribution-ShareAlike 4.0 International License:
+\Burl{http://creativecommons.org/licenses/by-sa/4.0/}.
+}
+\end{center}
+\centerline{*****************************} {\scriptsize Please,
+  \textbf{respect the copyright and license}. This material is provided
+  freely. If you use it, I only ask that you use it according to the (very
+  permissive) terms of the license: acknowledging the author, and
+  redistributing copies and derivatives under the same license. If you
+  have any doubts, ask me.}
+
+\end{frame}
+
+
+\begin{frame}
+   \frametitle{Outline}
+ {\small
+ \tableofcontents[subsectionstyle=show]
+ }
+ \end{frame}
+
+
+
+%% %% a test of knitr, encodings, etc 
+%%  \begin{frame}[fragile]
+%% The first element of \texttt{x} is . Boring boxplots
+%% and histograms recorded by the PDF device:
+ 
+%% <<boring-plots, fig.width=5, fig.height=5, out.width='.45\\linewidth', fig.show='hold'>>=
+%% ## two plots side by side (option fig.show='hold')
+%% x <- 1:10
+%% boxplot(x)
+%% hist(x,main='')
+%% @
+%% \end{frame}
+
+
+
+ 
+
+
+\section{Introduction}
+%\subsection{}
+
+\begin{frame}
+\frametitle{Objectives}
+\begin{itemize}
+\item Be aware that from data to biomedical conclusions there are several
+  steps that require statistics. We want to make inferences in a noisy
+  world.
+\item Be aware of the ``big themes''.
+\item Understand the origin of some of the statistical issues.
+\item Know when you need to talk to a statistician (almost always).
+\item Be aware of the kinds of things a statistician is thinking.
+\end{itemize}
+\end{frame}
+
+% \begin{frame}
+% \frametitle{What this class is not}
+% \begin{itemize}
+% \item Intro to stats.
+% \item All the stats you need to analyze your data.
+% \item A stats recipes book.
+% \item Note: we will use examples that are much, much, much simpler than
+%   almost anything you'll ever deal with.
+% \end{itemize}
+% \end{frame}
+
+
+
+
+% \begin{frame}
+%   \frametitle{DNA, genes and probes (spots)}
+%   \includegraphics[width=10.0cm,
+%      keepaspectratio]{DNA.pdf}
+%  \end{frame}
+
+
+
+%% \begin{frame}
+%% \frametitle{High-throughput et al.}
+%% \begin{itemize}
+%% \item The following provides some intro slides about microarrays.
+%% \item Microarrays can be used to measure messenger RNA (mRNA) or gene
+%%   expression. Similar approaches for array CGH (messure copy number in
+%%   genomic DNA). Similar approaches for \ldots
+%% \item The technical details are not important. What matters: tens or
+%%   hundreds of subjects for which we measure tens or hundreds of thousands
+%%   of genes or probes.
+  
+%% \item What really matters: a few hundreds of subjects, and for each one of
+%%   them information on tens of thousands to millions of characters (genes,
+%%   probes, SNPs, whatever).
+
+%% \end{itemize}
+%% \end{frame}
+
+%% \begin{frame}[fragile]
+%% \frametitle{IntroducciÃ³n a las microarrays}
+
+%% Material from Gema Moreno Bueno (Dept. BioquÃ­mica, Universidad AutÃ³noma de
+%% Madrid).
+
+%% \vspace*{20pt}
+%% (The slides are about measuring gene expression, mRNA. It is assumed that
+%% we can do \verb= mRNA -> cDNA =).
+
+%% \end{frame}
+
+
+
+%% \begin{frame}
+%% \begin{center}
+%% \includegraphics[%
+%%     width=10.2cm,
+%%     keepaspectratio]{s1.png}
+%% \end{center}
+%% \end{frame}
+
+
+
+%% \begin{frame}
+%% \begin{center}
+%% \includegraphics[%
+%%     width=10.2cm,
+%%     keepaspectratio]{s2.png}
+%% \end{center}
+%% \end{frame}
+
+%% \begin{frame}
+%% \begin{center}
+%% \includegraphics[%
+%%     width=10.2cm,
+%%     keepaspectratio]{s3.png}
+%% \end{center}
+%% \end{frame}
+
+%% \begin{frame}
+%% \begin{center}
+%% \includegraphics[%
+%%     width=10.2cm,
+%%     keepaspectratio]{s4.png}
+%% \end{center}
+%% \end{frame}
+
+
+
+%% \begin{frame}
+%% \begin{center}
+%% \includegraphics[%
+%%     width=10.2cm,
+%%     keepaspectratio]{s5.png}
+%% \end{center}
+%% \end{frame}
+
+
+%% \begin{frame}
+%% \begin{center}
+%% \includegraphics[%
+%%     width=10.2cm,
+%%     keepaspectratio]{s6.png}
+%% \end{center}
+%% \end{frame}
+
+
+%% \begin{frame}
+%% \begin{center}
+%% \includegraphics[%
+%%     width=10.2cm,
+%%     keepaspectratio]{s7.png}
+%% \end{center}
+%% \end{frame}
+
+
+%% \begin{frame}
+%% \begin{center}
+%% \includegraphics[%
+%%     width=10.2cm,
+%%     keepaspectratio]{s8.png}
+%% \end{center}
+%% \end{frame}
+
+
+%% \begin{frame}
+%% \begin{center}
+%% \includegraphics[%
+%%     width=10.2cm,
+%%     keepaspectratio]{s9.png}
+%% \end{center}
+%% \end{frame}
+
+
+%% \begin{frame}
+%% \begin{center}
+%% \includegraphics[%
+%%     width=10.2cm,
+%%     keepaspectratio]{s10.png}
+%% \end{center}
+%% \end{frame}
+
+
+
+
+
+
+
+
+
+%% \begin{frame}
+%% \frametitle{Why do we need statistics?}
+%% \begin{itemize}
+%% \item We want to make inferences in a noisy world.
+%% \item Stats tells us how to go from data to conclusions (or lack of
+%%   conclusions). Conclusions based on evidence. 
+%% \end{itemize}
+%% \end{frame}
+
+
+
+
+\section{Omics et al: the data}
+
+\begin{frame}
+  \frametitle{Key idea}
+  \begin{itemize}
+  \item We measure:
+    \begin{itemize}
+    \item ``Expression'' or ``Mutation status'' or \ldots of genes/probes
+    \item For a set of samples (subjects, patients, mice, cell lines, etc) 
+    \end{itemize}
+  \item Many, many genes/probes (tens of thousands, millions)
+  \item Tens to thousands of samples
+  \item And we want to do something with that
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{What general issues matter to us?}
+  \begin{itemize}
+  \item What are you targeting? What do you want to measure?
+    \begin{itemize}
+    \item Abundance of transcripts
+    \item Copy number changes
+    \item Relative abundance of polymorphisms
+    \item \ldots
+    \end{itemize}
+  \item What type of variable is that?
+    \begin{itemize}
+    \item The number in the cell of the spreadsheet
+    \item Continuous-like vs.\ count
+    \end{itemize}
+  \item Need for normalization
+    \begin{itemize}
+    \item E.g., microarrays: GC content
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Some common questions}
+
+\begin{itemize}
+\item Are there groups in the genes?
+\item Are there groups in the subjects?
+\item Do groups of subjects differ in the expression of some genes?
+\item Can we find genes that will allow us to differentiate between the
+  groups of patients?
+\item All of this, in a context of high expectations \ldots
+ \end{itemize}
+ \end{frame}
+
+
+
+ 
+ 
+\begin{frame}
+\frametitle{}
+\TPMargin{3pt}
+
+%% FIXME: I seem to need to repeat this here (instead of leaving
+%% at end), because overlay seems not to be working.
+%\textblockcolour{red}
+%%\textblockrulecolour{red}
+\begin{textblock*}{103mm}(23mm,25mm)
+\textblockcolour{red}
+  \includegraphics[%
+  width=10.1cm,
+  keepaspectratio]{detail-egapp.png}
+\end{textblock*}
+
+\TPMargin{3pt}
+%\textblockcolour{black}
+%%\textblockrulecolour{red}
+\begin{textblock*}{102mm}(20mm,3.7mm)
+\textblockcolour{black}
+  \includegraphics[%
+  width=10.0cm,
+  keepaspectratio]{egapp.png}
+\end{textblock*}
+
+
+%%% It looks like placing it second does NOT ensure
+%%  that it will really be placed second
+
+
+%\textblockcolour{red}
+%%\textblockrulecolour{red}
+\begin{textblock*}{103mm}(23mm,25mm)
+  \textblockcolour{red}
+  \includegraphics[%
+  width=10.1cm,
+  keepaspectratio]{detail-egapp.png}
+\end{textblock*}
+
+\textblockcolour{}
+
+
+% \textblockcolour{blue}
+% %%\textblockrulecolour{red}
+% \begin{textblock*}{103mm}(5mm,63mm)
+%   \includegraphics[%
+%   width=10.1cm,
+%   keepaspectratio]{detail2-egapp.png}
+% \end{textblock*}
+
+
+\note[item]{Decepcionante, dado el dinero y nÃºmero de estudios.}
+
+\note[item]{La promesa de las ``Ã³micas'': medicina individualizada}
+\end{frame}
+
+
+
+
+ \begin{frame}
+\frametitle{Moral (moraleja, in Spanish)}
+
+\begin{quote}
+
+  Gene expression technologies show great promise to improve predictions
+  of prognosis and treatment benefit (\ldots).  The multidimensional
+  nature of these predictors demands that (\ldots) that exceptional rigor
+  and discipline be applied in evaluation.
+
+\vspace*{20pt}
+\textnormal{L.\ Marchionni et al., \textit{Ann Intern Medl}, 2008}
+%  Dec;60(12):1205-19. Epub 2007 Sep 24.
+% How to improve reliability and efficiency of research about molecular markers: roles of phases, guidelines, and study design.
+
+\end{quote}
+\note{Creo que los buenos sermones acababan con una moraleja a recordar}
+\note{Cada estudio mal hecho es una oportunidad perdida}
+
+\end{frame}
+
+
+
+
+% \begin{frame}
+% \frametitle{La lecciÃ³n de los microarrays de expresiÃ³n}
+% \vspace*{-5cm}
+% (Nature, 18 Octubre 2007, vol.\ 449, pp.\ 770--771)
+% \begin{textblock*}{90mm}(25mm,18mm)
+%   \includegraphics[%
+%   width=9.0cm,
+%   keepaspectratio]{microarrays-missing-high.png}
+% \end{textblock*}
+
+% \end{frame}
+
+
+% \begin{frame}
+% \frametitle{Â¿Y MammaPrint?}
+% \begin{textblock*}{73mm}(30mm,9mm)
+%   \includegraphics[%
+%   width=7.30cm,
+%   keepaspectratio]{mammaprint2.png}
+% \end{textblock*}
+
+% \begin{textblock*}{90mm}(25mm,43mm)
+%   \includegraphics[%
+%   width=9.0cm,
+%   keepaspectratio]{mammaprint1.png}
+% \end{textblock*}
+% \end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{The dangers of ``capitalizing on chance''}
+
+Statistical context: many genes, few subjects. $p \gg n$.
+
+
+\note[item]{La estadÃ­stica es, en gran parte, la ciencia que nos alerta contra
+  esas capitalizaciones. La que nos explica que las coincidencias son,
+  eso, coincidencias y no evidencias de nada.}
+
+\begin{description}
+\item[Differentially expressed genes] Risk of too many false positives
+  $\Rightarrow$ adjustments in the screening of p-values.
+
+
+\vspace*{20pt}
+\item[Classification/prediction] Very easy to obtain algorithms that
+  classify, perfectly, our data, but not new data
+  $\Rightarrow$ validate algorithms and classifiers
+
+
+\vspace*{20pt}
+\item[Hypotheses/questions] Tempting to make them vague, or ask none and
+  wait until ``the data say something'' $\Rightarrow$ define objectives
+  and how we will measure what we are interested in.
+
+\note[item]{por esto Ãºltimo NO hablaremos de clustering}
+\note[item]{Los datos siempre confiesan si los torturamos lo suficiente}
+\note[item]{Con muchos datos, no hace falta mucha tortura}
+% \begin{itemize}
+% \item p-valores no interpretables
+% \item calidad predictiva modelo no suele mejorar
+% \end{itemize}
+
+\end{description}
+\end{frame}
+
+
+
+
+
+
+%\section{Differential expression}
+
+\section{p-values}
+\begin{frame}
+\begin{textblock*}{91mm}(25mm,20mm)
+  \includegraphics[%
+  width=9.1cm,
+  keepaspectratio]{inference.png}
+\end{textblock*}
+\textblockcolour{white}
+  \begin{textblock*}{66mm}(25mm,82mm)
+    {\tiny(Efron, 1986, \textit{The American Statistician}, 40: 1--11)}
+  \end{textblock*}
+
+\end{frame}
+
+
+\subsection{}
+%% \subsection{Hypothesis testing, linear models, et al.}
+
+% \begin{frame}
+%  \tableofcontents[currentsection,subsectionstyle=show/show/hide]
+%  \end{frame}
+\begin{frame}
+\frametitle{Are there differences in the expression of certain genes
+  between/among groups of subjects?}
+
+If we have 2 (or 3, or 4, or ...) kinds of subjects (e.g., breast cancer
+vs. colon cancer), what genes behave differently?
+
+%% \vspace*{30pt}
+%% \pause
+
+%% Given 2 (or 3 or 4 or ...) kinds of subjects, what genes do different things?
+\end{frame}
+
+\end{document}
+
+
+
+
+%\subsubsection{ExpresiÃ³n diferencial vs. clasificaciÃ³n}
+
+
+ \begin{frame}
+\frametitle{Differential expression vs. classification}
+
+\centerline{[Classification/prediction]}
+\vspace*{7pt}
+Can we classify subjects into their true groups if we know the expression
+of certain genes?
+\vspace*{10pt}
+
+(Are there genes that can allow us to differentiate between groups of subjects?)
+
+\vspace*{15pt}
+\centerline{vs.}
+\vspace*{15pt}
+
+
+\centerline{[Differential expression]}
+\vspace*{7pt}
+What genes show differences between groups of subjects?
+%\pause
+
+%% \vspace*{20pt}
+
+%% {\tiny Height is different between male and female Spaniards.
+
+%% Height is not very useful to classify: subject X measures 1.74 m; is it a
+%% man or a woman?
+
+%% (There are examples in the other direction)
+%% }
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Differential expression}
+\begin{itemize}
+\item What does it mean ``to show differences''?  \vspace*{30pt}
+\item Eg., differences in means: the mean of expression of gene MYC in
+  group 1 is larger than the mean of expression of gene MYC in group 2
+  (group 1 over-expressed compared to group 2).
+\item ``different things'' $\Rightarrow$ ``differ in the mean'' \textbf{of
+  the populations}
+  \item But it need not refer to the mean.
+\note{Means, variances, medians, coexpression, etc}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+
+We want to compare the mean of expression of MYC between 15 diseased
+subjects and 18 non-diseased (``healthy'') subjects. How?
+
+%% \pause
+\vspace*{30pt}
+
+More formally: can the ``true'' (mean of) expression of the two groups be
+the same? (Do the two groups have the same mean of expression?)
+
+%% %% \pause
+%% \vspace*{30pt}
+
+%% Better yet if we say something about the certainty of our conclusion, the
+%% weight of evidence about there being differences.
+
+\end{frame}
+
+
+\begin{frame}
+
+We compute the mean of the two groups: 2.2 and 3.4. 
+
+% \vspace*{30pt}
+
+So what?
+\end{frame}
+
+
+
+% \begin{frame}[fragile]
+% <<echo=FALSE,eval=TRUE,results=hide,keep.source=TRUE>>=
+% options(width = 40)
+% mytry <- function(x) try(x)
+% options(pager = "cat") ## to prevent prompts with the help
+% @
+  
+%% I sample below, so no pattern in figures
+  % \frametitle{Escenario I }
+  
+<<label=escenarios,include=FALSE,echo=FALSE,fig.width=8,fig.height=6,fig.path='bm13'>>=
+cancer <- sample(rep(c(2, 2.1, 2.2, 2.3, 2.4), 3))
+sanas <- sample(rep(c(3.2, 3.3, 3.4, 3.4, 3.5, 3.6), 3))
+
+
+cancer.ii <- c(0.7,  4.5, 3.7, 4.0, 8.9, 
+               3.2, 0.0, 1.8, 3.5, 2.7, 
+               0.5, 3.4,-1.4, 2.9,-5.4)
+sanas.ii <- c(8.4, 6.1, 1.3, 4.1, 2.9, 
+              5.2, 2.4,-2.0, 4.4, 3.5,
+              -2.7, 3.2, 3.2,-0.6, 3.3, 
+              2.6, 9.1, 6.8)
+
+## mean(cancer)
+## mean(sanas)
+
+## par(mfrow = c(2, 1))
+## hist(sanas, xlim = c(1.9, 3.8))
+## hist(cancer, xlim = c(1.9, 3.8))
+## dev.off()
+par(mfrow = c(1, 2))
+dotchart(c(cancer, sanas), 
+         groups = factor(c(rep("diseased", 15), 
+           rep("healthy", 18))), 
+         color = c(rep("blue", 15), 
+           rep("red", 18)), main = "Scenario I")
+
+dotchart(c(cancer.ii, sanas.ii), 
+         groups = factor(c(rep("diseased.ii", 15), 
+           rep("healthy.ii", 18))), 
+         color = c(rep("blue", 15), 
+           rep("red", 18)), main = "Scenario II")
+
+@ 
+
+\begin{frame}
+\begin{textblock*}{110mm}(8mm,11mm)
+
+\includegraphics[%
+    width=11.0cm,
+    keepaspectratio]{bm13-escenarios}
+\end{textblock*}
+\end{frame}
+
+
+
+
+
+% 
+
+% \end{frame}
+
+% \begin{frame}[fragile]
+% \frametitle{ }
+% <<eval=TRUE,results=hide,keep.source=TRUE>>=
+
+% hist(c(cancer, sanas), breaks = 20)
+% hist(sanas, xlim = c(1.9, 3.8), col = "red", 
+%      main = "")
+% par(new = TRUE)
+% hist(cancer, xlim = c(1.9, 3.8), col = "blue", 
+%      main = "", xlab = "")
+% @ 
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Escenario II }
+% <<eval=TRUE,results=hide,keep.source=TRUE>>=
+% cancer.ii <- c(0.7,  4.5, 3.7, 4.0, 8.9, 
+%                3.2, 0.0, 1.8, 3.5, 2.7, 
+%                0.5, 3.4,-1.4, 2.9,-5.4)
+% sanas.ii <- c(8.4, 6.1, 1.3, 4.1, 2.9, 
+%               5.2, 2.4,-2.0, 4.4, 3.5,
+%               -2.7, 3.2, 3.2,-0.6, 3.3, 
+%               2.6, 9.1, 6.8)
+
+% mean(cancer.ii)
+% mean(sanas.ii)
+
+% par(mfrow = c(2, 1))
+% hist(sanas.ii, xlim = c(-5.5, 9.2), breaks = 8)
+% hist(cancer.ii, xlim = c(-5.5, 9.2), breaks = 8)
+% # dev.off()
+% par(mfrow = c(1,1))
+% dotchart(c(cancer.ii, sanas.ii), 
+%          groups = factor(c(rep("cancer.ii", 15), 
+%            rep("sanas.ii", 18))), 
+%          color = c(rep("blue", 15), 
+%            rep("red", 18)))
+% @ 
+% \end{frame}
+
+% \begin{frame}[fragile]
+%   \frametitle{}
+% <<eval=TRUE,results=hide,keep.source=TRUE>>=
+
+
+% hist(c(cancer.ii, sanas.ii), breaks = 20)
+% hist(sanas.ii, xlim = c(-5.5, 9.2), col = "red", 
+%      main = "", breaks = 10)
+% par(new = TRUE)
+% hist(cancer.ii, xlim = c(-5.5, 9.2), col = "blue",
+%      main = "", xlab = "", breaks = 10)
+% @ 
+% \end{frame}
+
+
+
+%% \begin{frame}
+%%   \frametitle{Differences between scenarios}
+%% \pause
+%%   \begin{itemize}
+%%   \item Variability
+%% \pause
+%% \item Variability of the means
+%%   \end{itemize}
+%% \end{frame}
+  
+
+
+\begin{frame}
+  \frametitle{How can we compare means?}
+  \begin{itemize}
+%  \item What do we want to compare, evaluate, test?
+%    \pause
+  \item If there were no differences (null hypothesis, $H_0$), what would
+    we expect?
+%    \pause
+  \item If there were no differences, what relationship would there be
+    between labels (diseased, healthy) and values?
+    
+  \item t-test, permutation tests, non-parametric tests, etc.
+    \hyperlink{permtest}{\beamergotobutton{Appendix: Permutation tests}}.
+  \end{itemize}
+\end{frame}
+      
+
+
+
+
+%%% FIXME zzz: incluir grÃ¡ficas para los dos casos de los histogramas
+
+
+
+% \begin{frame}
+%   \frametitle{Programemos test de permutaciÃ³n en R}
+%   \begin{itemize}
+%   \item Una funcion para el estadistico
+%   \item Reordenar los datos bajo la nula
+%   \item Calcular el estadistico bajo la nula
+%   \item Comparar (Â¿valor absoluto?)
+%     \item (Vamos verificando a medida que programamos)
+%   \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{}
+ 
+% <<eval=TRUE,results=hide,keep.source=TRUE>>=
+% mean.d <- function(x1, x2) 
+%   mean(x1) - mean(x2)
+
+% sample.and.stat1 <- function(x1, x2) {
+%   tmp <- sample(c(x1, x2))
+%   g1 <- tmp[seq(x1)]
+%   g2 <- tmp[seq(from = length(x1) + 1, 
+%                 to = length(tmp))]
+%   return(mean.d(g1, g2))
+% }
+
+% mean.d(cancer, sanas)
+% sample.and.stat1(cancer, sanas)
+
+% @ 
+
+
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{}
+% <<eval=TRUE,results=hide>>=
+% sample.and.stat2 <- function(x1, x2) {
+%   indices <- seq(from = 1, to = length(x1) + length(x2))
+%   indices1 <- sample(indices, length(x1))
+%   indices2 <- setdiff(indices, indices1) 
+%   alldata <- c(x1, x2)
+%   return(mean.d(alldata[indices1], alldata[indices2]))
+% }
+
+% sample.and.stat2(cancer, sanas)
+% @ 
+
+% % set.seed(1); sample.and.stat1(cancer, sanas)
+% % set.seed(1); sample.and.stat2(cancer, sanas)
+
+% \end{frame}
+
+% % \begin{frame}[fragile]
+% %   \frametitle{}
+% % <<eval=TRUE,results=hide>>=
+% % permut.test1 <- function(data1, data2, num.permut = 100) {
+% %   obs.stat <- mean.d(data1, data2)
+  
+% %   permut.stat <- sapply(1:num.permut, function(x)
+% %                         sample.and.stat1(data1, data2))
+% %   pv <- (sum(abs(permut.stat) > abs(obs.stat)) + 1)/(num.permut + 1)
+  
+% %   cat("\n p-value is ", pv, "\n")
+% %   return(list(obs.stat = obs.stat,
+% %               permut.stat = permut.stat,
+% %               pv = pv))
+% % }
+% % permut.test1(cancer, sanas)
+% % permut.test1(sanas, cancer)
+% % permut.test1(cancer.ii, sanas.ii)
+
+% % @ 
+% % \end{frame}
+
+% % \begin{frame}[fragile]
+% %   \frametitle{}
+% % <<eval=TRUE,results=hide>>=
+% % permut.test2 <- function(data1, data2, num.permut = 100) {
+% %   obs.stat <- mean.d(data1, data2)
+  
+% %   permut.stat <- replicate(num.permut, 
+% %                            sample.and.stat2(data1, data2))
+% %   pv <- (sum(abs(permut.stat) > abs(obs.stat)) + 1)/(num.permut + 1)
+  
+% %   cat("\n p-value is ", pv, "\n")
+% %   return(list(obs.stat = obs.stat,
+% %               permut.stat = permut.stat,
+% %               pv = pv))
+% % }
+% % permut.test2(cancer, sanas)
+% % permut.test2(cancer.ii, sanas.ii)
+
+% % @ 
+% % \end{frame}
+
+
+% % \begin{frame}[fragile]
+% %   \frametitle{}
+% % <<eval=TRUE,results=hide,keep.source=TRUE>>=
+% % set.seed(34); permut.test2(cancer, sanas)
+% % set.seed(3); permut.test1(cancer, sanas)
+% % set.seed(34); permut.test2(cancer.ii, sanas.ii)
+% % set.seed(34); permut.test1(cancer.ii, sanas.ii)
+% % set.seed(5); sample.and.stat1(cancer, sanas)
+% % runif(1)
+% % set.seed(5); sample.and.stat2(cancer, sanas)
+% % runif(1)
+
+% % @ 
+
+% % %% Notese: en sample.and.stat2 saco solo as many random numbers as for
+% % %% group 1, pero en el otro es el sample entero. Por eso, el primer
+% % %% "permut.stat" es igual, pero el segundo no.
+% % \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{}
+% <<eval=TRUE,results=hide,keep.source=TRUE>>=
+% permut.test <- function(data1, data2, 
+%                         fsample = sample.and.stat1, 
+%                         num.permut = 100) {
+%   obs.stat <- mean.d(data1, data2)
+  
+%   permut.stat <- replicate(num.permut, 
+%                            fsample(data1, data2))
+%   pv <- (sum(abs(permut.stat) > abs(obs.stat)) + 
+%          1) / (num.permut + 1)
+  
+%   cat("\n p-value is ", pv, "\n")
+  
+%   hist(permut.stat, xlim = c(min(obs.stat, 
+%                       min(permut.stat)),
+%                       max(obs.stat, 
+%                           max(permut.stat))))
+%   abline(v = obs.stat, col = "red")
+%   return(list(obs.stat = obs.stat,
+%               permut.stat = permut.stat,
+%               pv = pv))
+  
+% }
+
+% permut.test(sanas, cancer)
+% permut.test(cancer.ii, sanas.ii, 
+%             fsample = sample.and.stat2)
+
+% @  
+% \end{frame}
+
+
+
+
+% \begin{frame}
+%   \frametitle{}
+%   \begin{itemize}
+%   \item No son las funciones mÃ¡s eficientes.
+%   \item Equivalent test statistics (p. ej., media(g1) - media(total) ?).
+%   \item Â¿Y quÃ© estadÃ­stico queremos en realidad?
+%   \end{itemize}
+% \end{frame}
+
+
+
+%% \begin{frame}
+%% \frametitle{t-test to compare two groups}
+%% \begin{enumerate}
+%% \item Compute the means
+%% \item Subtract one from the other
+%% \item Compute a quantity related to the variance of the differences of the
+%%   means (this comes from the variance of each group).
+%% \item Divide the difference in means by the standard deviation of the
+%%   difference in means.
+%% \item Now we have a standardized difference: the t statistic.
+%% \end{enumerate}
+%% \end{frame}
+
+
+\begin{frame}
+\frametitle{What about probability and the strength of evidence?}
+\begin{enumerate}
+\item Using differnt approaches (analysis, permutation) we can obtain the
+  distribution of ``t'' under the null hypothesis. {\footnotesize Null
+    hypothesis: in this case that the two true means are equal.}: Obtain
+  the distribution of the ``t'' that one would find if there were, really,
+  no differences.
+\item Compute how likely it is to observe our ``t'' if the null hypothesis
+  were true.
+\item p-value: how likely our result would be if the null were true.  p-value: a measure of evidence against the null hypothesis.
+\end{enumerate}
+\end{frame}
+
+
+\begin{frame}
+\begin{textblock*}{105mm}(10mm,11mm)
+\textblockcolour{}
+\includegraphics[%
+    width=10.5cm,
+    keepaspectratio]{tdist.pdf}
+\end{textblock*}
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{p-value}
+\begin{itemize}
+\item Differential expression: our hypothesis ($\mu^{MYC}_1 \ne \mu^{MYC}_2$)
+\item p-value: how likely our results if the null hypothesis were true
+\item {\footnotesize (So there is a null hypothesis: $H_0: \mu^{MYC}_1 =
+    \mu^{MYC}_2$)}
+
+\vspace*{20pt}
+\item p-value: measure of evidence against the null hypothesis.
+\item p-value: \textbf{it is NOT the probability of the null hypothesis (nor of
+  the alternative hypothesis).}
+\vspace*{20pt}
+
+\item We compute one p-value for one null hypothesis (one per gene). E.g.,
+  MYC.
+\end{itemize}
+\end{frame}
+
+
+
+
+%%% FIXME zzz: incluir para los dos casos la distribucion t con los valores seÃ±alados
+
+
+
+%% \begin{frame}[fragile]
+%%   \frametitle{Differences between both procedures? }
+
+%%   \begin{itemize}
+%% \pause
+%%     \item With a t-test: if certain assumptions are true, there is a
+%%       statistic of know distribution under  $H_0$. From here, the p-value
+%%       is immediate.
+      
+%%       \item permutation test: we define a statistic. We do not derive
+%%         analytically its distribution. We obtain it numerically by
+%%         counting events generated under $H_0$. 
+%%       \pause
+%% \item Permutation tests are not ``assumption free''!!! 
+%% \item permutation tests might be testing a hypothesis we are not
+%%   interested in  (e.g., dispersion vs.\ mean).
+%% \item Some assumptions of parametric tests might be verifiable and/or
+%%   reasonable. And parametric models give us extra stuff  (model checking). 
+%% \item Numerically: are results similar?
+%%   \end{itemize}
+%% \end{frame}
+
+
+
+% \begin{frame}
+%   \frametitle{Diferencias entre ambos procedimientos? }
+
+%   \begin{itemize}
+%   \item Diferencias fundamentales?
+%     \pause
+%     \item Con el test de la t: si se cumplen ciertas condiciones,
+%       hay un (o unos) estadÃ­stico(s) de distribuciÃ³n conocida bajo $H_0$. A partir
+%       de ahÃ­, p-valor es inmediato.
+      
+%       \item Test de permutaciÃ³n: definimos un test estadÃ­stico. No nos
+%         preocupamos de derivar analÃ­ticamente su distribuciÃ³n. La
+%         obtenemos numÃ©ricamente, segun dicta $H_0$. 
+%       \item NumÃ©ricamente: Â¿se parecen los resultados?
+        
+%   \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}[fragile]
+%   \frametitle{Comparando (numÃ©ricamente) ambos procedimientos }
+  
+  
+% <<eval=TRUE,results=hide,keep.source=TRUE>>=
+% t.test(sanas, cancer, var.equal = TRUE)
+% cc <- permut.test(sanas, cancer, 
+%                   num.permut = 1000, 
+%                   fsample = sample.and.stat2)
+% t.test(sanas.ii, cancer.ii, var.equal = TRUE)
+% cc.ii <- permut.test(sanas.ii, cancer.ii, 
+%                   num.permut = 1000, 
+%                   fsample = sample.and.stat2)
+
+
+% @
+% \end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{ The p-value and the bag of interesting genes}
+
+\begin{itemize}
+\item We can think about a statistical test as \ldots
+\item a procedure to assign a gene to one of two groups
+\begin{itemize}
+\item ``Interesting ones'' (differentially expressed)
+\item Non ``interesting''
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+%% \begin{frame}
+%% \frametitle{ The p-value and the bag of interesting genes}
+
+
+%% If we are studying, e.g., the differential expression of many genes \ldots
+
+
+%% \begin{itemize}
+%% \item We can think about a statistical test as \ldots
+%% \item a procedure to assign a gene to one of two groups
+%% \begin{itemize}
+%% \item ``Interesting ones'' (differentially expressed)
+%% \item Non ``interesting''
+%% \end{itemize}
+%% \pause
+%% \item We apply now the procedure to each of the genes. See later for \ldots
+%%   \hyperlink{FDR}{\beamergotobutton{Control of multiple testing}}
+%% \end{itemize}
+%% \end{frame}
+
+
+
+
+
+\section[Multiple testing]{Control of multiple testing }
+\subsection{}
+ \begin{frame}
+ \tableofcontents[currentsection,subsectionstyle=show/show/hide]
+ \end{frame}
+
+%\subsection{The multiple testing problem} 
+\begin{frame}[label=FDR]
+\frametitle{Multiple testing}
+We know how to obtain a p-value to compare two groups.
+
+(And there are similar approaches for other comparisons.).
+
+We have, e.g., 10000 genes. So 10000 p-values \ldots
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{(Remember) p-values and the bag of interesting genes}
+
+If we are studying, e.g., differential expression of genes \ldots
+
+
+\begin{itemize}
+\item We can think about a statistical test as \ldots
+\item a procedure to assign a gene to one of two groups
+\begin{itemize}
+\item ``Interesting ones'' (probably differentially expressed)
+\item Non ``interesting''
+\end{itemize}
+
+\item We apply now the procedure to each of the genes.
+  
+\end{itemize}
+
+Can we just compute a p-value for each gene and select the relevant genes
+as those with small (say, $ p < 0.05$) p-value?
+
+\end{frame}
+
+
+
+%% \begin{frame}
+%% \centerline{\LARGE NO}
+%% \pause
+%% \vspace*{30pt}
+%% We are not looking at one p-value, but at tens of thousands of them (tens
+%% of thousands of hypothesis tests).
+%% \end{frame}
+
+
+
+\begin{frame}
+\frametitle{The fish (or the fishing expeditions)}
+
+\begin{itemize}
+\item We go fishing.
+\item In this sea, there is one specific fish (fish A) with a probability
+  of being caught of 0.05.
+
+\item In this sea, there are another 1000 fish like A (but only one is A,
+  of course). These are ``i.i.d'' fish (independent of A, but with
+  identical behavior to A).
+  
+\item What is $Pr\{eat\ fish\ A\}$?
+
+\item What is $Pr\{eat\ fish\}$?
+
+\item (In this case it is simple to see the differences, because the
+  wording makes obvious we are, or not, restricting ourselves to
+  ``A''. But what if we say ``eat fish A'' vs.\ ``have dinner''?).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{The fish  (II)}
+
+\begin{itemize}
+
+\item $Pr\{eat\ fish\ A\} = 0.05$.
+
+\item $Pr\{eat\ fish\} \simeq 1$ .
+
+\item The two events (eat A, eat fish) are very different.
+
+\item $Eat\ fish = \bigcup(eat\ A, eat\ B, eat\ C,$
+ $ \ldots, eat\ A\ and\ B, \ldots )$.
+ 
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{p-values are like fish}
+\begin{itemize}
+\item If we have 30000 genes, and there is no differential expression at
+  all in any $\ldots$
+\item and we declare as ``interesting'' those genes with p-value $<
+  0.05$ we will make lots of false positives ($\sim 1500$).
+\item We need to control this.
+
+\item (Note the differences between testing a pre-specified hypothesis
+  about a specific gene, and ``anything goes'' ---any gene with a
+  significant result will do for writing a paper).
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{The p-value case}
+(An example modified from Westfall and Young, 1993 ``Resampling-based multiple testing'').
+\begin{itemize}
+\item Suppose we have 100 independent genes. Thus, 100 null hypotheses, one for each gene.
+\item Suppose also that there are no differences in gene expression between
+the two groups of patients (i.e., the null is true, and we are using the appropriate
+test so that the p-value is Uniform on [0,1]).
+
+\item Thus, the probability that a particular test (say, for gene 3) is declared
+significant at level 0.05 is exactly 0.05. Good.
+
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{p-value case (II)}
+\begin{itemize}
+\item However, the probability of declaring at least one of the 100 hypotheses false
+(i.e., rejecting at least one, or finding at least one result significant) is:
+{\small
+\begin{eqnarray*}
+Pr(\mbox{at least one null rejected}) = 1 - Pr(\mbox{all}\ p_i > 0.05) = \\
+1 - (1 - 0.05)^{100} = 1 - 0.95^{100} = 0.994
+\end{eqnarray*}
+}
+\item So now, even if the 100 genes are not differentially expressed, there
+is a probability of 0.994 (yes, that is 99\%!!!) of ``finding'' at least 
+one which we declare as significantly different.
+
+\item The more genes, the more serious is the problem.
+
+\item In summary, without control for multiple testing, we would end up rejecting
+the null much more often than we should.
+\end{itemize}
+
+\end{frame} 
+
+\subsection{FDR}
+
+
+\begin{frame}
+\frametitle{FDR}
+
+\begin{tabular}{p{3.5cm}|p{2.5cm}|p{2.5cm}|}
+\multicolumn{3}{c}{\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \
+  \ \ \ \ \ \ \ \ \# non rejected\ \ \ \ \# rejected}\\
+\cline{2-3}
+\# same expression ($H_0$ \textit{true}) &\ \ \ \ \ \ \ \ \ U &\ \ \ \ \ \ \ \  V \\
+\cline{2-3}
+\# different expression ($H_0$ \textit{false}) &\ \ \ \ \ \ \ \ \ T  &\ \ \ \ \ \ \ \ S \\
+\cline{2-3}
+\end{tabular}
+%Yeap, that is a horrible hack; I couldn't get it work otherwise.
+
+
+
+\vspace*{30pt}
+
+
+\begin{description}
+\item[FDR] False Discovery Rate: expected proportion of type I error among
+  the rejected nulls: ($V + S$).
+$FDR = E(Q)$ where $Q=V/(V+S)$ if $V + S > 0$ (and $Q = 0$ otherwise). 
+
+{\footnotesize \item[FWER] $P(V \ge 1)$}
+
+\end{description}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{False positives}
+\begin{itemize}
+\item Why are false positives worse than false negatives?
+
+\begin{quote}
+Even if the false positive rate were zero, we still don't have nearly
+enough resources to experimentally verify all the claims
+
+\textnormal{(Cited en X.-L.\ Meng, \textsl{The American Statistician}, 2009)}
+\end{quote}
+\end{itemize}
+\end{frame}
+
+
+
+
+
+
+
+\begin{frame}
+\frametitle{FDR: interpreting output}
+\begin{itemize}
+\item p-value
+\item FDR
+\item FDR-adjusted p-values
+\item \red{Properties of lists!} See output.
+\item E.g.: \Burl{http://pomelo2.iib.uam.es/Examples/LeukemiaGolub/results.html}
+\end{itemize}
+
+\vspace*{15pt}
+{\scriptsize Further details in
+  \hyperlink{FDR-appendix}{\beamergotobutton{Appendix. FDR: the algorithm}}}
+\end{frame}
+
+
+
+%% \begin{frame}
+%%   \frametitle{Example of output}
+
+%% We can go to \Burl{http://pomelo2.bioinfo.cnio.es}
+
+%% \end{frame}
+        
+        
+        
+% 
+%\subsection[PEP]{q-values, PEP}
+
+\begin{frame}
+\frametitle{pFDR, q-values, PEP}
+\begin{itemize}
+\item Storey, Efron, et al.
+\item $FDR = E\left[\frac{\displaystyle V}{\displaystyle R}|R > 0 \right] \mathrm{Pr}(R > 0)$
+\item Only interested in FDR if there are positive results:
+$pFDR = E\left[\frac{\displaystyle V}{\displaystyle R}|R > 0 \right]$
+
+\item pFDR: ``posterior Bayesian Type I error''.
+\end{itemize}
+\end{frame}
+
+
+
+%% \begin{frame}
+%% \frametitle{}
+%% \begin{itemize}
+%% \item \textit{q-value}: expected proportion of false positives when a gene
+%%   (``feature'', in general) is considered significant..
+%% \item \textit{q-value}: the smallest pFDR so that a featyre will show up
+%%   in the output list.
+%% \item ``Bayesian p-value''?, ``pFDR adjusted p-value''?
+%% \item There are different ways to estimate pFDR and q-values.
+%% \item As with FDR: a property of lists, of sets.
+%% \end{itemize}
+%% \end{frame}
+
+
+
+\begin{frame}
+\frametitle{}
+\begin{itemize}
+\item PEP, ``posterior error probability'' or ``local FDR'': the
+  probability that a given feature be incorrect. For instance, ``the
+  probability that gene XYZ is NOT a differentially expressed one''.
+\item A property of a feature. The probability of a given gene being a
+  false positive \textbf{in the context of} a collection of genes
+  (p-values).
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{PEP vs.\ FDR}
+\begin{center}
+\includegraphics[%
+    width=8.5cm,
+    keepaspectratio]{kall.png}
+\end{center}
+
+{\small (Kall et al., 2008. J.\ Proteome Research, 7: 40--44) }
+
+\end{frame}
+
+
+
+
+\section[Design and analysis]{Design and analysis}
+
+\begin{frame}
+ \tableofcontents[currentsection,subsectionstyle=show/show/hide]
+\end{frame}
+\subsection{Tests, design}
+%\subsection{Sample size}
+\begin{frame}
+\frametitle{Sample size}
+\begin{itemize}
+\item I choose, randomly, 2 men and 3 women from this class and measure
+  their height. Can I say anything about the differences in height between
+  sexes in the Spanish population?
+% \item Why worry aboNo hace falta un p-valor: el tamaÃ±o de muestra es ridÃ­culamente
+%   pequeÃ±o para lo que queremos.
+  \pause
+  
+  \item Significant results vs.\ repeatable results.
+\item Each poorly conducted study is a wasted opportunity.
+\item The argument of money \ldots is it an argument?
+%% \item 50 samples per group?
+\item See Dobbin and Simon, 2005 and 2007, \textit{Biostatistics}.
+\end{itemize}
+\end{frame}
+
+
+%% \begin{frame}
+%% \frametitle{Sample size}
+%% \begin{itemize}
+%% \item Significant results vs.\ repeatable results.
+%% \item Each poorly conducted study is a wasted opportunity.
+%% \item The argument of money \ldots is it an argument?
+%% %% \item 50 samples per group?
+%% \item See Dobbin and Simon, 2005 and 2007, \textit{Biostatistics}.
+%% \end{itemize}
+%% \end{frame}
+
+%\subsection{What test to use?}
+\begin{frame}
+\frametitle{What test to use?}
+\begin{itemize}
+\item Even in the simplest of cases (comparing two groups) there are many
+  ways to analyze the data.
+\item Non-parametric vs.\ parametric statistics.
+\item Non-parametric and permutation tests.
+%% \item Experimental design.
+%% \item Sample size (interesting to try a permutation test with small ``N'').
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Type of response variable}
+  \begin{itemize}
+  \item Continuous-like: microarray
+  \item Count: NGS
+  %% \item Categorical
+  %% \item Survival
+    \pause
+  \item Can we have a unified view of this mess?
+  \item Linear models et
+    al. (\hyperlink{linearmodels}{\beamergotobutton{Linear models}})
+  \end{itemize}
+\end{frame}
+
+
+
+%\subsection{Nuances of experimental design}
+
+%% \begin{frame}
+%% \frametitle{Appropriate test}
+%% \begin{itemize}
+%% %%\item What if there are groups?
+%% \item What about other covariates?
+%% \item What if subjects are related ---family, region, etc?
+%% \item Experimental design.
+%% \end{itemize}
+%% \end{frame}
+
+
+\begin{frame}
+\frametitle{Samples have many characteristics}
+E.g., human subjects
+
+\begin{itemize}
+\item Age
+\item Sex
+\item Hospital, region, date of diagnostic, \ldots
+\item Patients measured multiple times
+\item Family relationships, same doctors, \ldots
+\item \ldots
+\item Include other variables to increase power (decrease variance) and
+  avoid biases
+\end{itemize}
+\end{frame}
+
+
+%% \begin{frame}
+%% \frametitle{Paired-designs, repeated measures}
+%% \begin{itemize}
+%% \item Cohorts: bold vs.\ non-bold brothers
+%% \item Same subject: tumor vs. non-tumor tissue
+%% \item Statistical power
+%%   \end{itemize}
+%% \end{frame}
+
+
+<<label=nonpaired,include=FALSE,echo=FALSE,fig.width=8,fig.height=6,fig.path='bm13'>>=
+par(mfrow = c(1, 1))
+x1 <- rnorm(10, mean = 12, sd = 2)
+x2 <- x1 + 0.7 + rnorm(10, mean = 0, sd = 0.05)
+#t.test(x1, x2)
+stripchart(list(x1, x2), vertical = TRUE, pch = 19, axes = FALSE, ylab = "MYC")
+box()
+axis(2)
+axis(1, at= c(1, 2), labels = c("Non-tumor", "Tumor") ) 
+
+
+
+@ 
+<<label=paired,include=FALSE,echo=FALSE,fig.width=8,fig.height=6,fig.path='bm13'>>=
+stripchart(list(x1, x2), vertical = TRUE, pch = 19, axes = FALSE, ylab = "MYC")
+box()
+axis(2)
+axis(1, at= c(1, 2), labels = c("Non-tumor", "Tumor")) 
+
+for(i in 1:10) 
+  segments(x0 = 1, x1 = 2, y0 = x1[i], y1 = x2[i], col = "red")
+
+# t.test(x1, x2, paired = TRUE)
+@ 
+%(NÃ³tese como he creado los datos: dos fuentes de variaciÃ³n).
+
+
+
+\begin{frame}
+  \frametitle{Paired vs.\ non-paired}
+\begin{textblock*}{110mm}(8mm,11mm)
+\textblockcolour{}
+\includegraphics[%
+    width=11.0cm,
+    keepaspectratio]{bm13-nonpaired}
+\end{textblock*}
+\end{frame}
+
+\begin{frame}
+    \frametitle{Paired vs.\ non-paired}
+
+\begin{textblock*}{110mm}(8mm,11mm)
+\textblockcolour{}
+\includegraphics[%
+    width=11.0cm,
+    keepaspectratio]{bm13-paired}
+\end{textblock*}
+\end{frame}
+
+
+%% \begin{frame}
+%% \frametitle{}
+%% \begin{itemize}
+%% \item Same subject, measured over time
+%% \pause 
+%% \item What if we have many subjects, but they come from a few different cities?
+%%   distintas?
+%% \item Random effects and mixed models.
+%% \end{itemize}
+%% \end{frame}
+
+
+
+\begin{frame}
+\frametitle{Which is the experimental unit?}
+\begin{itemize}
+\item 20 mice
+\item 10 assigned to drug A, 10 assigned to drug B
+\item Each mouse, in one leg a corticoid ointment, on the other a placebo ointment
+\item ointment: nested within mouse
+\item Which is the experimental unit?
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{}
+\begin{itemize}
+\item Two types of experimental unit: mouse, leg within mouse.
+\item To compare drugs: use mice
+\item To compare ointment: use leg within mouse
+\item Interaction: we can study it
+\item split-plot designs, mixed-effects models
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Replicates and pseudoreplicates}
+\begin{itemize}
+\item 20 arrays, 10 of one kind, 10 of another
+\item Scenarios
+\begin{itemize}
+\item 20 subjects total
+\item 5 subjects in each group, each subject measured twice
+\item 2 subjects in each group, each subject measure 5 times
+\item 5 families in each group, some with 1 representative, others with 2,
+  others with 3, \ldots
+
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Blocking}
+\begin{itemize}
+\item Mice are ``blocks'': ointment effect is within-mouse. We keep mouse
+  effects constant. Each mouse is its own control.
+
+\item ``Block what you can, randomize what you can't''
+\item Randomization: a tool to deal with possible systematic sources of
+  variation that we cannot control and avoids biases.
+% \item Â¿CuÃ¡ntos trabajais con datos observacionales y cuÃ¡ntos con datos experimentales?
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Real life is complicated \ldots}
+A simple t-test or simple-whatever will rarely be the most appropriate approach
+\vspace*{15pt}
+
+When you go to GEO or ArrayExpress or \ldots you must keep the above in mind.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Observational vs.\ experimental studies}
+\begin{itemize}
+\item Random assignment of treatments to subjects vs.\ observational studies
+\item Carefully use additional covariate: sex, age.
+\item Prostate cancer: what is the control?
+\item Controls: qualitative difference between observational and
+  experimental studies. (Randomization principle).
+
+\item Inference with observational data a lot more tricky. Complex interpretation.
+\end{itemize}
+\end{frame}
+
+
+\subsection{Linear models and EB}
+\begin{frame}
+\frametitle{More covariates}
+\begin{itemize}
+\item Even if there is no confounding, including covariates in analysis
+  can increase statistical power.
+\item Why?
+\item (Note: we use models to explain this.)
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[label=linearmodels]
+\frametitle{Linear models: introduction}
+\begin{itemize}
+\item Key in statistcs.
+ \[y_i = \sum_{j=1}^{j=p}x_{ij}\beta_j + e_i\]
+\item Often assume $e_i \sim Normal(0, \sigma^2)$
+\item Simple regression $y_i = \alpha + \beta
+x_i + e_i$ is a special case.
+\item Also multiple regression.
+\item And ANOVA (analysis of variance).
+\item Many other models derived from the general linear model.
+modelo lineal.
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}[label=lmgral]
+\frametitle{Linear models and their derivatives}
+(Following Faraway, 2008)
+
+\begin{itemize}
+\item Linear model:
+  
+\[y = \beta_0 + \beta_1 x_1 + \ldots + \beta_p x_p + e\]
+
+\item GLM: generalize  the $y$.  GLMs can analyze binary data, categorical
+  data, survival data, etc.
+\item Mixed models: generalize the $e$. Data with nested structures,
+  longitudinal, multilevel, etc, that induce correlations in $e$. Mixed
+  models, GEE, weighted least squares, etc.
+\end{itemize}
+\end{frame}
+
+
+
+\begin{frame}
+  \frametitle{Linear models and the matched-pairs design}
+  \begin{itemize}
+  \item $P53_{subject, condition} = Subject + Condition + e$
+  \item If we remove Subject (do not use that info) \ldots
+  \item \ldots we move ``Subject'' to the $e$.
+  \end{itemize}
+\end{frame}
+
+
+
+%\subsection{Moderated statistics and empirical Bayes}
+
+\begin{frame}
+  \frametitle{Extending the t-test/linear model approach}
+  \begin{itemize}
+  \item For each gene, use ONLY information for that gene
+  \item A poor job estimating variances
+  \end{itemize}
+\end{frame}
+
+%% \begin{frame}
+%% \frametitle{What test to use? (now we have many genes)}
+%% \begin{itemize}
+%% \item Central limit theorem, efficiency, robustness, using info from other
+%%   genes, ranges instead of values, etc.
+%% % \item (Un review en Jeffery et al., 2006, \textit{BMC Bioinformatics}, 7:
+%% %   359, en contexto de clasificaciÃ³n.)
+%% \item  EBayes procedures lead to improved power and decreased type I errors.
+%% \end{itemize}
+%% \end{frame}
+
+
+\begin{frame}
+\frametitle{Moderated statistics}
+\begin{itemize}
+\item Can use information from all other genes when making inferences about
+  each particular gene, specially in the estimation of variances. 
+\begin{itemize}
+\item Empirical Bayes approach of G.\ Smyth among the most widely used.
+\item Moderated statistics lead to both increases in power and
+  decreases in Type I errors.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+
+
+
+% % \subsection{Analysis and linear models}
+% \begin{frame}
+% \frametitle{Analysis and linear models}
+% \begin{itemize}
+
+% \item Linear models: great framework for many of the questions
+%   biologists ask (e.g., force to think about levels of variation, allow
+%   including covariates, re-frame typical tests such as $t$-test, etc).
+
+% \item Moderated statistics and linear models relatively well worked-out.
+% \pause
+% \item But linear models not really fully worked out:
+% \pause
+% \begin{itemize}
+% \item Mixed-effects models.
+% \item Interactions and pre-test estimation.
+% \end{itemize}
+% \item Do linear models induce mirages? Analyses with tiny sample sizes.
+% \item Many experiments are not so: why haven't we learned from epidemiology
+%   yet?
+% \end{itemize}
+% \end{frame}
+
+
+
+
+
+
+
+
+
+
+% \subsection{Estudios observacionales otra vez}
+% \begin{frame}
+% \frametitle{Recognizing observational studies}
+% \begin{itemize}
+% \item Many microarray studies are observational (e.g., samples from colon and
+%   lung cancer patients from a hospital).
+% \item These patients differ in a myriad of other factors besides their illness:
+%   sex, age, exercise and smoking habits, diet, where they live, etc.
+% \item All too often:
+% \begin{itemize}
+% \item Similarity of the two groups w.r.t.\ those covariates is not verified.
+% \item Appropriate adjustment for those covariates is not done.
+% \item Possible interactions are not examined.
+% \item Using a patients as its own control (samples from normal and affected
+%   tissue) rarely considered.
+% \end{itemize}
+% \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}
+% \frametitle{Recognizing observational studies}
+% \begin{itemize}
+% \item Many of the reported differences between groups of patients could be due
+%   to \mg{confounding} by and \mg{interaction} with other covariates. 
+% \pause
+% \item These and related issues (bias, reproducibility, generalization) have
+%   been the focus of reviews (Potter, 2001 [\textit{Nature
+%     Reviews Genetics}], 2003 [\textit{Trends in Genetics}]; Ransohoff, 2004,
+%   2005 [\textit{Nature Reviews Cancer}]).
+% \pause
+% \item \ldots and epidemiologists have already been here.
+% %\pause
+% %\item But what if we do not have access to the clinical data? Should we reconsider
+% %  what is the appropriate ``empirical null hypothesis'' (Efron, 2004,
+% %  JASA)? (Empirical null wider than the theoretical null used for a single
+% %  hypothesis test).
+
+% \end{itemize}
+
+% \end{frame}
+
+
+
+
+%% \begin{frame}
+%% \frametitle{Where is the p-value coming from?}
+%% \begin{itemize}
+%% \item What kind of test?
+%% \begin{itemize}
+%% \item Difference: in means? variances? correlations? \ldots
+%% \item How do we obtain the p-value?
+%% \end{itemize}
+%% \item What if three groups?
+%% \item And what about other response variables ---e.g., survival, time to death?
+%% \item What about clinical covariates?
+%% \item What if subjects are related ---family, region, etc?
+%% \item Experimental design in general \ldots
+  
+%% \end{itemize}
+%% \end{frame}
+
+
+% \begin{frame}
+% \frametitle{QuÃ© test usar?}
+% \begin{itemize}
+% \item Incluso en el caso mÃ¡s sencillo de comparar dos clases, muchas
+%   formas de analizar. Â¿CuÃ¡l?
+% \item EstadÃ­stica no-paramÃ©trica y curvas ROC
+% \item EstadÃ­stica paramÃ©trica
+% \item Empirical Bayes methods (SAM, Limma). G.\ Smyth.
+% \end{itemize}
+% \end{frame}
+
+%% \begin{frame}
+%% \frametitle{What test to use? (now we have many genes)}
+%% \begin{itemize}
+%% \item Central limit theorem, efficiency, robustness, using info from other
+%%   genes, ranges instead of values, etc.
+%% % \item (Un review en Jeffery et al., 2006, \textit{BMC Bioinformatics}, 7:
+%% %   359, en contexto de clasificaciÃ³n.)
+%% \item  EBayes procedures lead to improved power and decreased type I errors.
+%% \end{itemize}
+%% \end{frame}
+
+
+% \begin{frame}
+% \frametitle{Moderated statistics}
+% \begin{itemize}
+% \item Can use information from all other genes when making inferences about
+%   each particular gene, specially in the estimation of variances. 
+% \begin{itemize}
+% \item Empirical Bayes approach of G.\ Smyth among the most widely used.
+% \item Recent reviews show moderated statistics lead to both increases in power and
+%   decreases in Type I errors.
+% \end{itemize}
+% \end{itemize}
+% \end{frame}
+
+
+
+%% \subsection{Comparing rankings?}
+
+%% \begin{frame}
+%% \frametitle{Comparing lists of genes}
+%% Analyses with several platforms: how can we compare results?
+
+%% \vspace*{15pt}
+
+%% \begin{itemize}
+
+%% \item p-values or statistics?
+%% \item Fold-change with p-value thresholds?
+
+%% \vspace*{25pt}
+%% \item Shi et al., 2008, \textit{BMC Bioinformatics}, 9 (Suppl 9): S10.
+%% \item Klebanov et al., 2007, \textit{Nature Biotechnology}, 25 (1):
+%%   25--26. (And answer from Shi et al.).
+%% \end{itemize}
+
+
+%% \end{frame}
+
+
+
+% \begin{frame}
+% \frametitle{Ultimas observaciones}
+% \begin{itemize}
+% \item TamaÃ±o de muestra
+% \item Test apropiado para el problema.
+% \item Test y anÃ¡lisis apropiado al tipo de diseÃ±o.
+% \end{itemize}
+% \end{frame}
+
+
+
+% \begin{frame}
+% \frametitle{TamaÃ±o de muestra}
+% \begin{itemize}
+% \item Selecciono al azar 2 varones y 3 mujeres de esta clase. Dinero medio en el
+%   bolsillo: 3 euros los varones, 15 euros las mujeres. 
+% % \item Titular del ``QuÃ©!!'': las mujeres espaÃ±olas llevan 5 veces mÃ¡s
+% %   dinero encima que los hombres.
+% \item No hace falta un p-valor: el tamaÃ±o de muestra es ridÃ­culamente
+%   pequeÃ±o para lo que queremos.
+% \end{itemize}
+% \end{frame}
+
+
+% \begin{frame}
+% \frametitle{TamaÃ±o de muestra}
+% \begin{itemize}
+% \item Resultados significativos (o incluso ``reales'') vs. resultados repetibles.
+% \item Cada estudio mal hecho es una oportunidad mal aprovechada.
+% \item El argumento del dinero y la analogÃ­a del SSC.
+% \item 50 muestras por grupo.
+% \item Ver Dobbin and Simon, 2005 and 2007, \textit{Biostatistics}.
+% \end{itemize}
+% \end{frame}
+
+
+
+
+
+
+% \begin{frame}
+% \frametitle{Ooops! Again: the right procedure}
+% \begin{itemize}
+% \item What if there are groups?
+% \item What about clinical covarites?
+% \item What if subjects are related ---family, region, etc?
+% \item Experimental design.
+% \item What if we have time to death ---survival analysis?
+% \end{itemize}
+% \end{frame}
+
+
+
+%% \begin{frame}
+%% \frametitle{Everything else}
+%% \begin{itemize}
+%% \item For all the rest \ldots that is what statisticians were invented for.
+%% \end{itemize}
+%% \end{frame}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%% \section{Appendix: linear models}
+
+
+%% % \subsection{Linear models et al.}
+%% % \begin{frame}
+%% % \frametitle{}
+%% % \tableofcontents[sectionstyle=show/hide,subsectionstyle=show/shade/hide]
+%% % \end{frame}
+
+%% \begin{frame}
+%% \frametitle{Linear models: introduction}
+%% \begin{itemize}
+%% \item Key in statistcs.
+%% \item \[y_i = \sum_{j=1}^{j=p}x_{ij}\beta_j + e_i\]
+%% \item Often assume $e_i \sim Normal(0, \sigma^2)$
+%% \item Simple regression $y_i = \alpha + \beta
+%% x_i + e_i$ is a special case.
+%% \item Also multiple regression.
+%% \item And ANOVA (analysis of variance).
+%% \item many other models derived from the general linear model.
+%% modelo lineal.
+%% \end{itemize}
+%% \end{frame}
+
+%% % \begin{frame}[fragile]
+%% % \frametitle{Modelos lineales y derivados}
+%% % ``Roadmap'' en la fig.\ 57 de Kuhnert y Venables (p.\ 141).
+%% % \begin{itemize}
+%% % \item Modelos lineales
+%% % \item Modelos lineales generalizados
+%% % \item Modelos lineales multivariantes (MANOVA)
+%% % \item Modelos lineales mixtos
+%% % \item Modelos no-lineales
+%% % \item Modelos no-lineales mixtos
+%% % \item Modelos lineales generalizados mixtos (GLMM)
+%% % \item Modelos aditivos generalizados (GAM)
+%% % \end{itemize}
+%% % \end{frame}
+
+
+
+
+%% \begin{frame}[label=lmgral]
+%% \frametitle{Linear models and their derivatives}
+%% (Following Faraway, 2008)
+
+%% \begin{itemize}
+%% \item Linear model:
+  
+%% \[y = \beta_0 + \beta_1 x_1 + \ldots + \beta_p x_p + e\]
+
+%% \item GLM: generalize  the $y$.  GLMs can analyze binary data, categorical
+%%   data, etc.
+%% \item Mixed models: generalize the $e$. Data with nested structures,
+%%   longitudinal, multilevel, etc, that induce correlations in $e$. Mixed
+%%   models, GEE, weighted least squares, etc.
+%% \end{itemize}
+%% \end{frame}
+
+
+%% \begin{frame}
+%% \frametitle{}
+
+%% \[y = \beta_0 + \beta_1 x_1 + \ldots + \beta_p x_p + e\]
+
+%% \begin{itemize}
+
+%% \item non-parametric regression: Generalize the functional form of the
+%%   relationship with $x$. Not necessarily linear. E.g., GAMs.
+
+%% \item Robust regression: allow distributions with very heavy tails,
+%%   outliers, etc. %%Ver \verb=rlm= en paquete MASS.
+%% \end{itemize}
+%% \end{frame}
+
+
+
+
+\section{Appendix\qquad}
+%\subsection{}
+\begin{frame}
+ \tableofcontents[currentsection,subsectionstyle=show/show/hide]
+\end{frame}
+
+
+\subsection{Permutation tests and t-test}
+\begin{frame}[label=permtest]
+  \frametitle{The logic of a permutation test}
+  \begin{itemize}
+  \item Define the statistic (e.g., differences between means).
+  \item Obtain their distribution under the null hypothesis ($H_0$).
+  \item Calculate how likely our observed statistic is under the null hypothesis.
+
+    \vspace*{20pt}
+  
+    \item (Permutation tests are very general approaches that can be used
+      for testing a variety of hypothesis ---e.g., Dupuy and Simon
+      paper--- but their use in real life requires a lot of care.)
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{The logic of a permutation test}
+  \begin{itemize}
+  \item Key idea: under $H_0$ labels and values are not related.
+  \item That's it! 
+  \item How could we generate a data set that is compatible with $H_0$?
+  \item And another? \ldots
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{t-test to compare two groups}
+\begin{enumerate}
+\item Compute the means
+\item Subtract one from the other
+\item Compute a quantity related to the variance of the differences of the
+  means (this comes from the variance of each group).
+\item Divide the difference in means by the standard deviation of the
+  difference in means.
+\item Now we have a standardized difference: the t statistic.
+\end{enumerate}
+\end{frame}
+
+\begin{frame}[fragile]
+  \frametitle{Differences between both procedures? }
+
+  \begin{itemize}
+    \item With a t-test: if certain assumptions are true, there is a
+      statistic of know distribution under  $H_0$. From here, the p-value
+      is immediate.
+      
+      \item permutation test: we define a statistic. We do not derive
+        analytically its distribution. We obtain it numerically by
+        counting events generated under $H_0$. 
+\item Permutation tests are not ``assumption free''!!! 
+\item permutation tests might be testing a hypothesis we are not
+  interested in  (e.g., dispersion vs.\ mean).
+\item Some assumptions of parametric tests might be verifiable and/or
+  reasonable. And parametric models give us extra stuff  (model checking). 
+\item Numerically: are results similar?
+  \end{itemize}
+\end{frame}
+
+
+\subsection{FDR: algorithm, numerical examples}
+
+\begin{frame}[label=FDR-appendix]
+\frametitle{FDR: the algorithm}
+\begin{center}
+\includegraphics[%
+    width=9.8cm,
+    keepaspectratio]{fdr2.png}
+\end{center}
+
+(Reiner et al., 2003, Bioinformatics)
+
+\vspace*{20pt}
+(Note: a ``step-up procedure'').
+
+\vspace*{20pt}
+
+This procedure controls FDR. (Does not say ``estimates'').
+
+\end{frame}
+
+
+
+%%% FIXME zz: reordenar de menor a mayor!!
+
+\begin{frame}
+\frametitle{Examples}
+What will I reject at 0.1?
+\begin{itemize}
+\item 0.1, 0.1, 0.1, 0.1 
+  \item {\footnotesize \mg{all}}
+\vspace*{10pt}
+
+  \item 0.1, 0.01, 0.01, 0.01
+  \item {\footnotesize \mg{all}}
+\vspace*{10pt}
+
+\item 0.2, 0.1, 0.1, 0.1
+  \item {\footnotesize \mg{none}}
+\item Threshold: 0.1
+\item $p \le threshold * i/m$?
+\item \og{$0.1 * 3/4 = 0.075$}
+\vspace*{10pt}
+
+\item 0.2, 0.075, 0.075, 0.075
+  \item {\footnotesize \mg{last three}}
+    
+    
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Adjusted p-values}
+\begin{quote}
+  The results of a multiple testing procedure can be reported as
+  multiplicity adjusted p-values. As with the regular p-value, each
+  adjusted p-value is compared to the desired significance level, and if
+  smaller, the hypothesis is rejected. Therefore, the way adjusted
+  p-values are used and interpreted remains conveniently familiar,
+  regardless of the adjustment procedure complexity.
+\end{quote}
+
+(Reiner et al., 2003, Bioinformatics)
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Adjusted p-values: FDR}
+\begin{quote}
+For an FDR controlling procedure, the adjusted p-value
+of an individual hypothesis is the lowest level of FDR for
+which the hypothesis is first included in the set of rejected
+hypotheses. Thus the adjusted p-value of $P_{(j)}$ using the
+BH procedure, is $P^{BH}_{(j)} = \min_{j \le i}\{P_{(i)} \frac{m}{i}\}$.
+                   
+
+
+\end{quote}
+(Reiner et al., 2003, Bioinformatics)
+
+\end{frame}
+
+
+\begin{frame}[fragile=singleslide]
+\frametitle{Examples of FDR-adjusted p-values}
+\begin{itemize}
+\item 0.2, 0.08, 0.08, 0.08
+\item \mg{0.2, 0.1067, 0.1067, 0.1067}
+\item \og{0.08 * 4/3 = 0.1067; 0.08 * 4/2 = 0.16; \ldots}
+
+<<eval=TRUE,results='hide',tidy=FALSE>>=
+ p.adjust(c(0.2, 0.08, 0.08, 0.08), 
+          method = "BH")
+ @   
+  
+\vspace*{20pt}
+\item 0.2, 0.08, 0.07, 0.07
+
+\item \mg{0.2, 0.1067, 0.1067, 0.1067}
+\item \og{0.08 * 4/3 = 0.1067; 0.07 * 4/2 = 0.14;}
+
+<<eval=TRUE,results='hide',tidy=FALSE>>=
+p.adjust(c(0.2, 0.08, 0.07, 0.07), 
+          method = "BH")
+ @   
+  
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[fragile=singleslide]
+\frametitle{}
+\begin{itemize}
+
+\item 0.2, 0.08, 0.05, 0.015
+\item \mg{0.2, 0.1067, 0.1, 0.06}
+\item \og{0.05 * 4/2 = 0.1; 0.015 * 4/1 = 0.06}
+
+<<eval=TRUE,results='hide',tidy=FALSE>>=
+p.adjust(c(0.2, 0.08, 0.05, 0.015), 
+         method = "BH")
+@   
+\end{itemize}
+\end{frame}
+
+
+
+
+\end{document}
+
+
+
+
+%%% Local Variables:
+%%% ispell-local-dictionary: "en_US"
+%%% coding: utf-8
+%%% End:
+
+
+
