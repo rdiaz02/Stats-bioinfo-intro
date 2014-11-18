@@ -145,11 +145,20 @@ Attribution-ShareAlike 4.0 International License:
 
 \begin{frame}
    \frametitle{Outline}
- {\small
- \tableofcontents[subsectionstyle=hide]
- }
+   \begin{itemize}
+   \item Introduction to Omics and statistics issues
+   \item Differential expression and multiple testing
+   \item Classification/prediction (and clustering)
+   \end{itemize}
+   
+   
+   %% {\small
+ %% \tableofcontents[subsectionstyle=hide]
+ %% }
  \end{frame}
 
+
+ 
 
 
 %% %% a test of knitr, encodings, etc 
@@ -167,11 +176,8 @@ Attribution-ShareAlike 4.0 International License:
 
 
 
- 
-
-
-\section{Introduction}
-%\subsection{}
+%% Using parts makes harder to move around the document 
+%\part{Intro: Omics et al}
 
 \begin{frame}
 \frametitle{Objectives}
@@ -186,170 +192,19 @@ Attribution-ShareAlike 4.0 International License:
 \end{itemize}
 \end{frame}
 
-% \begin{frame}
-% \frametitle{What this class is not}
-% \begin{itemize}
-% \item Intro to stats.
-% \item All the stats you need to analyze your data.
-% \item A stats recipes book.
-% \item Note: we will use examples that are much, much, much simpler than
-%   almost anything you'll ever deal with.
-% \end{itemize}
-% \end{frame}
-
-
-
-
-% \begin{frame}
-%   \frametitle{DNA, genes and probes (spots)}
-%   \includegraphics[width=10.0cm,
-%      keepaspectratio]{DNA.pdf}
-%  \end{frame}
-
-
-
-%% \begin{frame}
-%% \frametitle{High-throughput et al.}
-%% \begin{itemize}
-%% \item The following provides some intro slides about microarrays.
-%% \item Microarrays can be used to measure messenger RNA (mRNA) or gene
-%%   expression. Similar approaches for array CGH (messure copy number in
-%%   genomic DNA). Similar approaches for \ldots
-%% \item The technical details are not important. What matters: tens or
-%%   hundreds of subjects for which we measure tens or hundreds of thousands
-%%   of genes or probes.
-  
-%% \item What really matters: a few hundreds of subjects, and for each one of
-%%   them information on tens of thousands to millions of characters (genes,
-%%   probes, SNPs, whatever).
-
-%% \end{itemize}
-%% \end{frame}
-
-%% \begin{frame}[fragile]
-%% \frametitle{IntroducciÃ³n a las microarrays}
-
-%% Material from Gema Moreno Bueno (Dept. BioquÃ­mica, Universidad AutÃ³noma de
-%% Madrid).
-
-%% \vspace*{20pt}
-%% (The slides are about measuring gene expression, mRNA. It is assumed that
-%% we can do \verb= mRNA -> cDNA =).
-
-%% \end{frame}
-
-
-
-%% \begin{frame}
-%% \begin{center}
-%% \includegraphics[%
-%%     width=10.2cm,
-%%     keepaspectratio]{s1.png}
-%% \end{center}
-%% \end{frame}
-
-
-
-%% \begin{frame}
-%% \begin{center}
-%% \includegraphics[%
-%%     width=10.2cm,
-%%     keepaspectratio]{s2.png}
-%% \end{center}
-%% \end{frame}
-
-%% \begin{frame}
-%% \begin{center}
-%% \includegraphics[%
-%%     width=10.2cm,
-%%     keepaspectratio]{s3.png}
-%% \end{center}
-%% \end{frame}
-
-%% \begin{frame}
-%% \begin{center}
-%% \includegraphics[%
-%%     width=10.2cm,
-%%     keepaspectratio]{s4.png}
-%% \end{center}
-%% \end{frame}
-
-
-
-%% \begin{frame}
-%% \begin{center}
-%% \includegraphics[%
-%%     width=10.2cm,
-%%     keepaspectratio]{s5.png}
-%% \end{center}
-%% \end{frame}
-
-
-%% \begin{frame}
-%% \begin{center}
-%% \includegraphics[%
-%%     width=10.2cm,
-%%     keepaspectratio]{s6.png}
-%% \end{center}
-%% \end{frame}
-
-
-%% \begin{frame}
-%% \begin{center}
-%% \includegraphics[%
-%%     width=10.2cm,
-%%     keepaspectratio]{s7.png}
-%% \end{center}
-%% \end{frame}
-
-
-%% \begin{frame}
-%% \begin{center}
-%% \includegraphics[%
-%%     width=10.2cm,
-%%     keepaspectratio]{s8.png}
-%% \end{center}
-%% \end{frame}
-
-
-%% \begin{frame}
-%% \begin{center}
-%% \includegraphics[%
-%%     width=10.2cm,
-%%     keepaspectratio]{s9.png}
-%% \end{center}
-%% \end{frame}
-
-
-%% \begin{frame}
-%% \begin{center}
-%% \includegraphics[%
-%%     width=10.2cm,
-%%     keepaspectratio]{s10.png}
-%% \end{center}
-%% \end{frame}
-
-
-
-
-
-
-
-
-
-%% \begin{frame}
-%% \frametitle{Why do we need statistics?}
-%% \begin{itemize}
-%% \item We want to make inferences in a noisy world.
-%% \item Stats tells us how to go from data to conclusions (or lack of
-%%   conclusions). Conclusions based on evidence. 
-%% \end{itemize}
-%% \end{frame}
-
-
 
 
 \section{Omics et al: the data}
+
+\begin{frame}
+   \frametitle{Outline}
+ {\small
+ \tableofcontents[subsectionstyle=hide]
+}
+ \end{frame}
+ 
+ 
+ 
 
 \begin{frame}
   \frametitle{Key idea}
@@ -562,6 +417,14 @@ Statistical context: many genes, few subjects. $p \gg n$.
 
 
 
+% \part{Differential expression and multiple testing}
+
+\begin{frame}
+   \frametitle{Outline}
+ {\small
+ \tableofcontents[subsectionstyle=hide]
+ }
+ \end{frame}
 
 
 
@@ -1872,7 +1735,26 @@ modelo lineal.
 }
 
 
+\section{Appendix: FDR and permutation tests}
+%\subsection{}
+\begin{frame}
+ \tableofcontents[currentsection,subsectionstyle=show/show/hide]
+\end{frame}
 
+% Next does not work
+% \input{appendix-permut-test-fdr.Rnw}
+
+<<child-permut-test-fdr, child='appendix-permut-test-fdr.Rnw'>>=
+@ 
+
+%\part{Classification and clustering}
+
+\input{classification-clustering}
+
+
+
+%\part{When to call the statistician}
+\input{stats-autopsies}
 
 % % \subsection{Analysis and linear models}
 % \begin{frame}
@@ -2182,15 +2064,8 @@ modelo lineal.
 
 
 
-\section{Appendix\qquad}
-%\subsection{}
-\begin{frame}
- \tableofcontents[currentsection,subsectionstyle=show/show/hide]
-\end{frame}
 
-\input{appendix-permut-test-fdr.Rnw}
-
-
+\end{document}
 
 
 %% \subsection{Permutation tests and t-test}
@@ -2387,7 +2262,7 @@ modelo lineal.
 
 
 
-\end{document}
+
 
 
 
