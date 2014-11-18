@@ -732,6 +732,7 @@ dotchart(c(cancer.ii, sanas.ii),
 @ 
 
 \begin{frame}
+  \textblockcolour{white}
 \begin{textblock*}{110mm}(8mm,11mm)
 
 \includegraphics[%
@@ -1037,7 +1038,7 @@ dotchart(c(cancer.ii, sanas.ii),
 
 
 \begin{frame}
-\begin{textblock*}{105mm}(10mm,11mm)
+\begin{textblock*}{105mm}(18mm,11mm)
 \textblockcolour{}
 \includegraphics[%
     width=10.5cm,
@@ -1462,6 +1463,41 @@ $pFDR = E\left[\frac{\displaystyle V}{\displaystyle R}|R > 0 \right]$
 
 {\small (Kall et al., 2008. J.\ Proteome Research, 7: 40--44) }
 
+\end{frame}
+
+
+
+
+\subsection{Multiple testing, forensics, etc}
+
+
+\begin{frame}
+  \frametitle{Forensics}
+  \begin{itemize}
+  \item A crime.
+  \item DNA test: $\frac{1}{100000}$ of match at random.
+  \item Two scenarios:
+    \begin{itemize}
+    \item The suspect (suspect because of something else) matches
+    \item You search in a large database of individuals and find a match
+    \end{itemize}
+    \item Beware of the prosecutor's fallacy.
+  \end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+  \frametitle{Sally Clark case}
+  \begin{itemize}
+  \item $P(2\ SIDS)$ is rare.
+  \item $P(2\ murders)$ might be even rarer.
+  \item $P(Innocent|Data) \ne P(Data | Innocence)$
+  \item Before someone is sent to jail you probably want:
+    $\frac{P(Guilty|Data)}{P(Innocent| Data)}$ very large
+  \item Beware of the prosecutor's fallacy.
+  \end{itemize}
 \end{frame}
 
 
