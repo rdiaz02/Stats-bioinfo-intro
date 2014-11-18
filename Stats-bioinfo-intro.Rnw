@@ -143,6 +143,17 @@ Attribution-ShareAlike 4.0 International License:
 \end{frame}
 
 
+
+\begin{frame}
+  \frametitle{Availability}
+All of the files are available from 
+\Burl{https://github.com/rdiaz02/Stats-bioinfo-intro}.
+You will need knitr, beamer, etc, to produce the pdfs.
+
+Again, please respect the copyright and license.
+\end{frame}
+
+
 \begin{frame}
    \frametitle{Outline}
    \begin{itemize}
