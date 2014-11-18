@@ -207,12 +207,12 @@ Again, please respect the copyright and license.
 
 \section{Omics et al: the data}
 
-\begin{frame}
-   \frametitle{Outline}
- {\small
- \tableofcontents[subsectionstyle=hide]
-}
- \end{frame}
+%% \begin{frame}
+%%    \frametitle{Outline}
+%%  {\small
+%%  \tableofcontents[subsectionstyle=hide]
+%% }
+%%  \end{frame}
  
  
  
@@ -430,12 +430,12 @@ Statistical context: many genes, few subjects. $p \gg n$.
 
 % \part{Differential expression and multiple testing}
 
-\begin{frame}
-   \frametitle{Outline}
- {\small
- \tableofcontents[subsectionstyle=hide]
- }
- \end{frame}
+%% \begin{frame}
+%%    \frametitle{Outline}
+%%  {\small
+%%  \tableofcontents[subsectionstyle=hide]
+%%  }
+%%  \end{frame}
 
 
 
@@ -1053,10 +1053,10 @@ dotchart(c(cancer.ii, sanas.ii),
 
 
 \section[Multiple testing]{Control of multiple testing }
-\subsection{}
- \begin{frame}
- \tableofcontents[currentsection,subsectionstyle=show/show/hide]
- \end{frame}
+
+ %% \begin{frame}
+ %% \tableofcontents[currentsection,subsectionstyle=show/show/hide]
+ %% \end{frame}
 
 %\subsection{The multiple testing problem} 
 \begin{frame}[label=FDR]
@@ -1379,9 +1379,9 @@ $pFDR = E\left[\frac{\displaystyle V}{\displaystyle R}|R > 0 \right]$
 
 \section[Design and analysis]{Design and analysis}
 
-\begin{frame}
- \tableofcontents[currentsection,subsectionstyle=show/show/hide]
-\end{frame}
+%% \begin{frame}
+%%  \tableofcontents[currentsection,subsectionstyle=show/show/hide]
+%% \end{frame}
 \subsection{Tests, design}
 %\subsection{Sample size}
 \begin{frame}
@@ -1748,9 +1748,9 @@ modelo lineal.
 
 \section{Appendix: FDR and permutation tests}
 %\subsection{}
-\begin{frame}
- \tableofcontents[currentsection,subsectionstyle=show/show/hide]
-\end{frame}
+%% \begin{frame}
+%%  \tableofcontents[currentsection,subsectionstyle=show/show/hide]
+%% \end{frame}
 
 % Next does not work
 % \input{appendix-permut-test-fdr.Rnw}
