@@ -146,7 +146,7 @@ Attribution-ShareAlike 4.0 International License:
 \begin{frame}
    \frametitle{Outline}
  {\small
- \tableofcontents[subsectionstyle=show]
+ \tableofcontents[subsectionstyle=hide]
  }
  \end{frame}
 
@@ -600,10 +600,6 @@ vs. colon cancer), what genes behave differently?
 
 %% Given 2 (or 3 or 4 or ...) kinds of subjects, what genes do different things?
 \end{frame}
-
-\end{document}
-
-
 
 
 %\subsubsection{ExpresiÃ³n diferencial vs. clasificaciÃ³n}
@@ -1767,6 +1763,22 @@ modelo lineal.
 \end{itemize}
 \end{frame}
 
+\begin{frame}
+\frametitle{Linear models and their derivatives}
+``Roadmap'' in fig.\ 57, Kuhnert and Venables (p.\ 141).
+\begin{itemize}
+\item Linear models
+\item Generalized linear models
+\item Multivariate linear models (MANOVA)
+\item Mixed effects linear models
+\item Nonlinear models
+\item Nonlinear mixed-effects models
+\item Generalized linear mixed effects models (GLMM)
+\item Generalized additive models (GAM)
+\end{itemize}
+\end{frame}
+
+
 
 
 \begin{frame}
@@ -1803,7 +1815,7 @@ modelo lineal.
 
 
 \begin{frame}
-\frametitle{Moderated statistics}
+\frametitle{Moderated statistics, limma, Empirical Bayes}
 \begin{itemize}
 \item Can use information from all other genes when making inferences about
   each particular gene, specially in the estimation of variances. 
@@ -1814,6 +1826,14 @@ modelo lineal.
 \end{itemize}
 \end{itemize}
 \end{frame}
+
+
+
+
+\subsection{Summary of scenarios}
+{\tiny
+\input{tables-diff-exp-questions}
+}
 
 
 

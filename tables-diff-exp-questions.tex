@@ -1,0 +1,231 @@
+\begin{frame}
+\frametitle{Comparing two groups}
+
+\textblockcolour{white}
+\TPMargin{7pt}
+\begin{textblock*}{153mm}(2mm,13mm)
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{>{\centering}m{2.92cm} c c p{1.0cm} m{1.92cm}}
+
+\hline
+\hline
+Example question & Model & $H_0$ & Test & Other \\
+\hline
+\hline
+
+Is the expression of MYC different between Cancer (C) and Non-cancer (N)
+patients? & $MYC \sim Group$ & $\mu_{\textsc{nc}} = \mu_{\textsc{c}}$ & t-test& \\
+\hline
+Is the expression of any genes in this array different between Cancer (C)
+and Non-cancer (N) patients? & $\begin{aligned} MYC & \sim Group\\
+  P53 & \sim Group\\
+\ldots &\\
+\ldots & \sim Group
+\end{aligned}$
+&
+$\begin{aligned} \mu_{\textsc{nc}}^{\textsc{myc}} & = \mu_{\textsc{c}}^{\textsc{myc}}\\
+\mu_{\textsc{nc}}^{\textsc{p53}} & = \mu_{\textsc{c}}^{\textsc{p53}}\\
+\ldots & \\
+\mu_{\textsc{nc}}^{\ldots} & = \mu_{\textsc{c}}^{\ldots}
+\end{aligned}$
+&Many t-tests & Empirical Bayes (EB). FDR\\
+\hline
+
+
+Is the expression of MYC different between Cancer (C) and Non-cancer (N)
+patients when we control for other factors (age, sex, \ldots)? & $MYC \sim
+Group + Age + Sex$ & $\mu_{\textsc{nc}} = \mu_{\textsc{c}}$ & t-test &
+{\tiny Type or relationship of others (non-linear, etc). Interactions}\\
+\hline
+
+Is the expression of any genes in this array different between Cancer (C) and Non-cancer
+(N) patients when we control for other factors?&
+$\begin{aligned}
+MYC & \sim Group + Age + Sex\\
+P53 & \sim Group + Age + Sex\\
+\ldots& \\
+\ldots & \sim Group + Age + Sex
+\end{aligned}$
+&
+$\begin{aligned} \mu_{\textsc{nc}}^{\textsc{myc}} & = \mu_{\textsc{c}}^{\textsc{myc}}\\
+\mu_{\textsc{nc}}^{\textsc{p53}} & = \mu_{\textsc{c}}^{\textsc{p53}}\\
+\ldots & \\
+\mu_{\textsc{nc}}^{\ldots} & = \mu_{\textsc{c}}^{\ldots}
+\end{aligned}$
+&Many t-tests & Empirical Bayes. FDR. {\tiny Type or relationship of others (non-linear, etc). Interactions}\\
+\hline
+\end{tabular}
+\end{textblock*}
+\end{frame}
+
+\begin{frame}
+\frametitle{Comparing three or more groups}
+\renewcommand{\arraystretch}{1.5}
+%\begin{tabular}{p{5.0cm}ccp{2.2cm}p{2.0cm}}
+%\begin{tabular}{>{\centering}m{4.9cm} c c m{1.8cm} m{1.8cm}}
+
+\textblockcolour{white}
+\TPMargin{5pt}
+\begin{textblock*}{153mm}(-1mm,8mm)
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{>{\centering}m{2.12cm} c c p{1.0cm} m{1.52cm}}
+
+
+
+% \begin{tabular}{>{\centering}m{4.3cm} c c p{1.8cm} m{1.8cm}}
+\hline
+\hline
+Example question & Model & $H_0$ & Test & Other \\
+\hline
+\hline
+
+Is the expression of MYC different between patients with Colon (C),
+Prostate (P),
+Lung (L), and Neck (N) cancer? & $MYC \sim Group$ &
+$\mu_{\textsc{c}} = \mu_{\textsc{p}} = \mu_{\textsc{l}} =
+\mu_{\textsc{n}}$ & ANOVA \qquad {\tiny (F test)}& Might want to do some
+pairwise comparisons.\\
+\hline
+
+Is the expression of any genes in this array different between patients with Colon (C),
+Prostate (P), Lung (L), and Neck (N) cancer? &
+$\begin{aligned} MYC & \sim Group\\
+  P53 & \sim Group\\
+\ldots &\\
+\ldots & \sim Group
+\end{aligned}$
+&
+$\begin{aligned} 
+\mu_{\textsc{c}}^{\textsc{myc}} & = \mu_{\textsc{p}}^{\textsc{myc}} = 
+\mu_{\textsc{l}}^{\textsc{myc}} = \mu_{\textsc{n}}^{\textsc{myc}}\\
+\mu_{\textsc{c}}^{\textsc{p53}} & = \mu_{\textsc{p}}^{\textsc{p53}} = 
+\mu_{\textsc{l}}^{\textsc{p53}} = \mu_{\textsc{n}}^{\textsc{p53}}\\
+
+\ldots & \\
+\mu_{\textsc{c}}^{\textsc{\ldots}} & = \mu_{\textsc{p}}^{\textsc{\ldots}} =
+\mu_{\textsc{l}}^{\textsc{\ldots}} = \mu_{\textsc{n}}^{\textsc{\ldots}}\\
+\end{aligned}$
+& Many ANOVAs & EB. FDR. Might want to do some
+pairwise comparisons.\\
+
+\hline
+Is the expression of MYC different between patients with Colon (C),
+Prostate (P),
+Lung (L), and Neck (N) cancer when we control for other factors?
+& $MYC \sim Group + Age + Sex$ &
+$\mu_{\textsc{c}} = \mu_{\textsc{p}} = \mu_{\textsc{l}} =
+\mu_{\textsc{n}}$ & ANOVA & Might want to do some
+pairwise comparisons. {\tiny Type or relationship of others (non-linear, etc). Interactions}\\
+\hline
+
+Is the expression of any genes in this array different between patients with Colon (C),
+Prostate (P),
+Lung (L), and Neck (N) cancer when we control for other factors?&
+$\begin{aligned} MYC & \sim Group + Age + Sex\\
+  P53 & \sim Group + Age + Sex\\
+\ldots &\\
+\ldots & \sim Group + Age + Sex\end{aligned}$
+&
+$\begin{aligned} 
+\mu_{\textsc{c}}^{\textsc{myc}} & = \mu_{\textsc{p}}^{\textsc{myc}} = 
+\mu_{\textsc{l}}^{\textsc{myc}} = \mu_{\textsc{n}}^{\textsc{myc}}\\
+\mu_{\textsc{c}}^{\textsc{p53}}& = \mu_{\textsc{p}}^{\textsc{p53}} = 
+\mu_{\textsc{l}}^{\textsc{p53}} = \mu_{\textsc{n}}^{\textsc{p53}}\\
+\ldots & \\
+\mu_{\textsc{c}}^{\textsc{\ldots}} & = \mu_{\textsc{p}}^{\textsc{\ldots}} =
+\mu_{\textsc{l}}^{\textsc{\ldots}} = \mu_{\textsc{n}}^{\textsc{\ldots}}\\
+\end{aligned}$
+& Many ANOVAs& EB. FDR. Might want to do some
+pairwise comparisons. {\tiny Type or relationship of others (non-linear, etc). Interactions} \\
+
+\hline
+\end{tabular}
+\end{textblock*}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Relationship with a numerical variable: regression}
+\renewcommand{\arraystretch}{1.5}
+%\begin{tabular}{p{5.0cm}ccp{2.2cm}p{2.0cm}}
+%\begin{tabular}{>{\centering}m{4.9cm} c c m{1.8cm} m{1.8cm}}
+
+\textblockcolour{white}
+\TPMargin{8pt}
+\begin{textblock*}{153mm}(4mm,18mm)
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{>{\centering}m{2.92cm} c c p{1.0cm} m{1.92cm}}
+
+
+% \begin{tabular}{>{\centering}m{4.3cm} c c p{1.8cm} m{1.8cm}}
+\hline
+\hline
+Example question & Model & $H_0$ & Test & Other \\
+\hline
+\hline
+
+
+Does the expression of MYC change (increase or decrease) with (as we
+increase) cholesterol (numerical
+variable)? & $MYC \sim cholest$ & $\beta = 0$ &Regression\quad  {\tiny t-test} &
+{\tiny (Non-linear?)}\\
+
+\hline
+\\
+Does the expression of any genes in this array change with cholesterol?&
+$\begin{aligned}
+MYC & \sim cholest\\
+P53 & \sim cholest\\
+\ldots& \\
+\ldots & \sim cholest
+\end{aligned}$
+&
+
+$\begin{aligned}
+  \beta^{\textsc{myc}} &= 0\\
+  \beta^{\textsc{p53}} &= 0\\
+\ldots\\
+  \beta^{\textsc{\ldots}} &= 0
+\end{aligned}$
+&
+Many regressions
+&
+Empirical Bayes.
+FDR
+\\
+
+\hline
+Does the expression of MYC change with cholesterol when we control
+for other factors? & $MYC \sim cholest + Age + Sex$ & $\beta = 0$
+&Regression & {\tiny Type or relationship of others (non-linear, etc). Interactions}
+\\
+\hline
+\\
+Does the expression of any genes in this array change with cholesterol
+when we control for other factors?&
+$\begin{aligned}
+MYC & \sim cholest + Age + Sex\\
+P53 & \sim cholest + Age + Sex\\
+\ldots& \\
+\ldots & \sim cholest + Age + Sex
+\end{aligned}$
+&
+
+$\begin{aligned}
+  \beta^{\textsc{myc}} &= 0\\
+  \beta^{\textsc{p53}} &= 0\\
+\ldots\\
+  \beta^{\textsc{\ldots}} &= 0
+\end{aligned}$
+&
+Many regressions
+&
+Empirical Bayes.
+FDR. {\tiny Type or relationship of others (non-linear, etc). Interactions}
+\\
+
+\hline
+\end{tabular}
+\end{textblock*}
+\end{frame}
