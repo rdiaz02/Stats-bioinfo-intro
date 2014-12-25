@@ -770,6 +770,20 @@ Look, for example, at \Burl{http://tnasas.iib.uam.es}
 
 
 \begin{frame}
+  \frametitle{We might not want to use many genes}
+  \begin{itemize}
+  \item Number of features (genes) vs.\ number of samples
+  \item ``Metafeatures'' (metagenes):
+    \begin{itemize}
+    \item Biological relevance
+    \item Statistical noise reduction (averages)
+    \end{itemize}
+  \item Adding not-very-relevant features generally decreases test set performance.
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Validating what?}
 \ldots what is it we are validating? how do we measure predictive ability?
 
@@ -1261,8 +1275,11 @@ Beware: Brier score, C-index, ROC: using ``out of bag'' predictions!!
 \end{frame}
 
 
+%% FIXME
+%% mention this in class
+%% why you do not need many features
 
-
+%%\section[Classif.summary]{Classification/prediction: summary}
 
 \section[Clustering]{Are there groups? Clustering}
 
