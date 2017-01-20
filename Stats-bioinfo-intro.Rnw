@@ -571,7 +571,7 @@ So what?
 %% I sample below, so no pattern in figures
   % \frametitle{Escenario I }
   
-<<label=escenarios,include=FALSE,echo=FALSE,fig.width=8,fig.height=6,fig.path='bm13'>>=
+<<label='bm13-escenarios',include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
 cancer <- sample(rep(c(2, 2.1, 2.2, 2.3, 2.4), 3))
 sanas <- sample(rep(c(3.2, 3.3, 3.4, 3.4, 3.5, 3.6), 3))
 
@@ -612,7 +612,7 @@ dotchart(c(cancer.ii, sanas.ii),
 
 \includegraphics[%
     width=11.0cm,
-    keepaspectratio]{bm13-escenarios}
+    keepaspectratio]{./figure/bm13-escenarios-1}
 \end{textblock*}
 \end{frame}
 
@@ -1486,7 +1486,7 @@ E.g., human subjects
 %% \end{frame}
 
 
-<<label=nonpaired,include=FALSE,echo=FALSE,fig.width=8,fig.height=6,fig.path='bm13'>>=
+<<label='bm13-nonpaired',include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
 par(mfrow = c(1, 1))
 x1 <- rnorm(10, mean = 12, sd = 2)
 x2 <- x1 + 0.7 + rnorm(10, mean = 0, sd = 0.05)
@@ -1499,7 +1499,7 @@ axis(1, at= c(1, 2), labels = c("Non-tumor", "Tumor") )
 
 
 @ 
-<<label=paired,include=FALSE,echo=FALSE,fig.width=8,fig.height=6,fig.path='bm13'>>=
+<<label='bm13-paired',include=FALSE,echo=FALSE,fig.width=8,fig.height=6>>=
 stripchart(list(x1, x2), vertical = TRUE, pch = 19, axes = FALSE, ylab = "MYC")
 box()
 axis(2)
@@ -1520,7 +1520,7 @@ for(i in 1:10)
 \textblockcolour{}
 \includegraphics[%
     width=11.0cm,
-    keepaspectratio]{bm13-nonpaired}
+    keepaspectratio]{./figure/bm13-nonpaired-1}
 \end{textblock*}
 \end{frame}
 
@@ -1531,7 +1531,7 @@ for(i in 1:10)
 \textblockcolour{}
 \includegraphics[%
     width=11.0cm,
-    keepaspectratio]{bm13-paired}
+    keepaspectratio]{./figure/bm13-paired-1}
 \end{textblock*}
 \end{frame}
 
